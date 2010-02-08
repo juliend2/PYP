@@ -86,6 +86,7 @@ class visitor:
         #     nodes            
         #     dest             
         # PHP print statement takes only one parameter so we take the first one :
+        print 'nodes', node.nodes
         self.src += 'print '+ get_source( node.nodes[0] ) 
 
     def visitName(self, node):
@@ -266,7 +267,19 @@ class visitor:
         self.src += ', '.join( [get_source(k)+'=>'+get_source(v) for k,v in
         node.items] )
         self.src += ')'
-        print node.items
+
+    def visitSubscript(self, node):
+        # Subscript attributes
+        #     expr             
+        #     flags            
+        #     subs             
+        print 'SUBSCRIPT expr',node.expr
+        print 'SUBSCRIPT flags',node.flags
+        print 'SUBSCRIPT subs',node.subs
+        if node.flags == 'OP_APPLY':
+            self.src += get_source(node.expr) +'['
+            self.src += get_source(node.subs[0]) # [0] parce qu'on ne peut faire de [0:2] en PHP
+            self.src += ']'
  
 def get_source(node):
     """Return the source code of the node, built by an instance of

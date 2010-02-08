@@ -12,7 +12,6 @@ strings
 parent::ParentClassMethod()
 -permettre les commentaires docstring '''... ''' qui deviennent des /* */
 -Permettre d'acceder a des methodes d'attributs : $this->attr->method();
--implementer les arrays pour les lists et dictionaries
 -implementer les booleans et null
 -permettre les negations du type !$valeur
 -permettre d'acceder aux cles de variables : $array['cle'][0]

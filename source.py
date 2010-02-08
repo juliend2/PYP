@@ -42,8 +42,11 @@ print ( 4 + 4 ) / 3
 print 2 - 1
 print 3 + 3
 
-print ['elem1', 'elem2', variab, 23]
-print {
+array1 = ['elem1', 'elem2', variab, 23]
+array2 = {
     'key1':'value',
     key2:value2
     }
+print array1[0]
+print array2['key1']
+print array2['key1'][0]
