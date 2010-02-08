@@ -3,6 +3,7 @@ import compiler
 from types import TupleType
 
 INDENT = '    '
+LINEEND = ';'
 
 class visitor:
     """Instances of ge_visitor are used as the visitor argument to 
@@ -290,7 +291,7 @@ class visitor:
 
     def visitList(self,t):
         self.src += 'array('
-        self.src += ','.join ( [ get_source(n) for n in t.nodes ])
+        self.src += ', '.join ( [ get_source(n) for n in t.nodes ])
         self.src += ')'
 
     def visitDict(self, node):
@@ -316,6 +317,23 @@ def get_source(node):
     ge_visitor"""
     return compiler.walk(node,visitor()).src
 
+def add_semicolons(code):
+    global LINEEND
+    lines_list = code.split('\n')
+    in_comment = False
+    new_lines = []
+    for line in lines_list:
+        if line.startswith('/*'):
+            in_comment = True
+        elif line.endswith('*/'):
+            in_comment = False
+        if line.strip() != '' and not in_comment and not (line.endswith('}') or line.endswith('{')):
+            new_lines.append( line + LINEEND )
+        else:
+            new_lines.append( line )
+    return '\n'.join(new_lines)
+
+
 def indent_source(code):
     global INDENT
     lines_list = code.split('\n')
@@ -333,4 +351,4 @@ def indent_source(code):
 
 if __name__ == '__main__':
     unindented_source = get_source(compiler.parseFile('source.py'))
-    print indent_source(unindented_source)
+    print indent_source(add_semicolons(unindented_source))
