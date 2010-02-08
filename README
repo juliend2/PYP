@@ -1,6 +1,5 @@
 TODO :
 
--Faire les elif et else
 -Faire l'indentation
 -Ajouter les point-virgules (;) aux fins de lignes
 -Regler le probleme de concatenation de string pour PHP. "." au lieu de "+" qui
@@ -9,10 +8,9 @@ est l'operateur d'addition
 strings
 -Finir d'integrer les / - % -= *= et /= 
 -Finir d'integrer les !== != < > <= >= 
--permettre d'acceder a des attributs de classe comme
+# YA PAS CA EN PYTHON : -permettre d'acceder a des attributs de classe comme
 parent::ParentClassMethod()
 -permettre les commentaires docstring '''... ''' qui deviennent des /* */
--Permettre d'acceder a des methodes d'attributs : $this->attr->method();
 -implementer les arrays pour les lists et dictionaries
 -implementer les booleans et null
 -permettre les parentheses dans les statements
@@ -21,8 +19,7 @@ parent::ParentClassMethod()
 -permettre ce truc : =&
 -traduire le '%s, %d' % (string, chiffre) de python pour la version php qui est
 sprintf('%s, %d', $string, $chiffre);
--implementer les while et foreach
-
+-implementer les while
 
 Nice to have:
 

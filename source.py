@@ -26,6 +26,8 @@ class Joie(base):
     def Crier(self, joie):
         if joie:
             return '%s %s' % (self.prop1, self.prop2)
+        else:
+            return '%d' % self.prop1
         return self.prop1+' '+self.prop2
 
 obj = Joie('prop1', 'prop2', 'prop3')

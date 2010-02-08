@@ -1,3 +1,4 @@
+import re
 import compiler
 from types import TupleType
 
@@ -101,6 +102,27 @@ class visitor:
         else:
             self.src += str(node.value)
 
+    def visitMod(self, node):
+        # Mod attributes
+        #     left             
+        #     right            
+        left = get_source( node.left )
+        if '%' in left and type(left) is str and left.startswith("'"):
+            print 'right', node.right.getChildren()
+            # sprintf
+            self.src += 'sprintf(' + left + ', '
+            if str(node.right.__class__) == 'compiler.ast.Tuple':
+                self.src += ', '.join( [ get_source(n) for n in node.right ] )
+            else:
+                self.src +=  get_source(node.right)
+            self.src += ')'
+        else:
+            # modulo normal
+            pass
+        print 'MOD left', node.left
+        print 'MOD right', node.right
+        
+
     def visitMul(self, node):
         # Mul attributes
         #     left             
@@ -187,7 +209,11 @@ class visitor:
         #     dstar_args       the extended **-arg value
         # call a function :
         if type(node.node.getChildren()[0]) is str:
-            self.src += node.node.getChildren()[0]  + '('
+            # if the first letter is a uppercase, we have an instanciation:
+            if re.match('^[A-Z]', node.node.getChildren()[0] ):
+                self.src += 'new ' + node.node.getChildren()[0]  + '('
+            else: # if the first letter is a lowercase, we have a function:
+                self.src += node.node.getChildren()[0] + '('
         else: # call a method :
             if len( node.node.getChildren() ) == 2 :
                 self.src += get_source( node.node.getChildren()[0] )
