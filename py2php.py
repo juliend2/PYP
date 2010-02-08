@@ -18,7 +18,7 @@ class visitor:
         self.src += '<?php\n' + get_source(t.getChildNodes()[0])
     
     def visitStmt(self,node):
-        print '***stmt nodes****',len(node.nodes), node.nodes
+        #print '***stmt nodes****',len(node.nodes), node.nodes
         self.src += '\n'.join( [ get_source(n) for n in node.nodes ]) + '\n'
 
     def visitClass(self, node):
@@ -44,7 +44,7 @@ class visitor:
         #     flags            xxx
         #     doc              doc string, a string or <code>None</code>
         #     code             the body of the function
-        print 'node.code',node.code
+        #print 'node.code',node.code
         self.src += 'function %s (' % node.name
         nb_defaults = len(node.defaults)
         if nb_defaults > 0 : # there are some default args
