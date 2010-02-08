@@ -182,7 +182,13 @@ class visitor:
         #     ops              
         self.src +=  get_source( node.expr )
         for comp in node.ops:
-            self.src += comp[0] + get_source( comp[1] )
+            if comp[0] == '!=':
+                operator = '!=='
+            elif comp[0] == '==':
+                operator = '==='
+            else:
+                operator = comp[0]
+            self.src += ' '+operator+' ' + get_source( comp[1] )
 
     def visitIf(self, node):
         # if attributes
@@ -273,9 +279,6 @@ class visitor:
         #     expr             
         #     flags            
         #     subs             
-        print 'SUBSCRIPT expr',node.expr
-        print 'SUBSCRIPT flags',node.flags
-        print 'SUBSCRIPT subs',node.subs
         if node.flags == 'OP_APPLY':
             self.src += get_source(node.expr) +'['
             self.src += get_source(node.subs[0]) # [0] parce qu'on ne peut faire de [0:2] en PHP

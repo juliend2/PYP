@@ -41,6 +41,7 @@ print 3.8 / 4
 print ( 4 + 4 ) / 3
 print 2 - 1
 print 3 + 3
+print 3 ^ 3
 
 array1 = ['elem1', 'elem2', variab, 23]
 array2 = {
@@ -50,3 +51,11 @@ array2 = {
 print array1[0]
 print array2['key1']
 print array2['key1'][0]
+
+print 20 != '20'
+print 20 > 23
+print 30 < 2
+print 32 <= 32
+print 32 >= 32
+var *= 1
+var /= 1
