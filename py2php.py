@@ -2,6 +2,8 @@ import re
 import compiler
 from types import TupleType
 
+INDENT = '    '
+
 class visitor:
     """Instances of ge_visitor are used as the visitor argument to 
     compiler.walk(tree,visitor) where tree is an AST tree built by
@@ -314,6 +316,21 @@ def get_source(node):
     ge_visitor"""
     return compiler.walk(node,visitor()).src
 
- 
+def indent_source(code):
+    global INDENT
+    lines_list = code.split('\n')
+    tab_count = 0
+    new_lines = []
+    for line in lines_list:
+        if line == '}':
+            tab_count -= 1
+        val = (INDENT*tab_count) + line
+        indentation = INDENT*tab_count
+        new_lines.append( val )
+        if line.endswith('{'):
+            tab_count += 1
+    return '\n'.join(new_lines)
+
 if __name__ == '__main__':
-    print get_source(compiler.parseFile('source.py'))
+    unindented_source = get_source(compiler.parseFile('source.py'))
+    print indent_source(unindented_source)
