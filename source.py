@@ -1,3 +1,5 @@
+"""Doc string pour le module"""
+
 for key,value in list:
     dosomething()
     print 'joie'
@@ -7,6 +9,7 @@ for val in list:
     print 'joie'
 
 def fonction(argu, argu2, defaut=8):
+    '''doc string pour la fonction'''
     if argu == 2 > 3 or argu == 4:
         argu += 3
         return argu * 2
@@ -18,6 +21,7 @@ def fonction(argu, argu2, defaut=8):
         return argu
 
 class Joie(base):
+    '''doc string pour la classe'''
     def __init__(self, prop1, prop2, prop3='verbe'):
         self.prop1 = prop1
         self.prop2 = prop2

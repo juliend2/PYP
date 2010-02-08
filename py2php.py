@@ -14,9 +14,17 @@ class visitor:
 
     def __init__(self):
         self.src = ''
+        self.comment_start = '/*\n'
+        self.comment_end = '\n*/\n'
 
     def visitModule(self,t):
-        self.src += '<?php\n' + get_source(t.getChildNodes()[0])
+        # Module attributes
+        #     doc              doc string, a string or <code>None</code>
+        #     node             body of the module, a <tt class="class">Stmt</tt>
+        self.src += '<?php\n' 
+        if t.doc:
+            self.src += self.comment_start + t.doc + self.comment_end
+        self.src += get_source(t.getChildNodes()[0])
     
     def visitStmt(self,node):
         #print '***stmt nodes****',len(node.nodes), node.nodes
@@ -29,7 +37,7 @@ class visitor:
         #     doc              doc string, a string or <code>None</code>
         #     code             the body of the class statement
         if node.doc != None:
-            self.src += '/* ' + node.doc + ' */' 
+            self.src += self.comment_start + node.doc + self.comment_end
         self.src += 'class %s ' % node.name
         if len(node.bases) > 0:
             self.src += 'extends %s' % get_source( node.bases[0] )[1:] # php has no multiple inheritance
@@ -45,6 +53,8 @@ class visitor:
         #     flags            xxx
         #     doc              doc string, a string or <code>None</code>
         #     code             the body of the function
+        if node.doc != None:
+            self.src += self.comment_start + node.doc + self.comment_end
         self.src += 'function %s (' % node.name
         nb_defaults = len(node.defaults)
         if nb_defaults > 0 : # there are some default args
