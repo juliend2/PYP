@@ -80,6 +80,13 @@ class visitor:
     def visitReturn(self, node):
         self.src += 'return '+get_source(node.value)
 
+    def visitPrintnl(self, node):
+        # Printnl attributes
+        #     nodes            
+        #     dest             
+        # PHP print statement takes only one parameter so we take the first one :
+        self.src += 'print '+ get_source( node.nodes[0] ) 
+
     def visitName(self, node):
         if node.name == 'self':
             self.src += '$this'
@@ -151,7 +158,6 @@ class visitor:
             else:
                 self.src += 'elseif ('
             # for compare in test:
-            print 'test : ', test
             self.src += get_source( test[0] )
             self.src += ') {\n'
             self.src += ''.join( [ get_source(n) for n in test[1:] ] )
@@ -179,7 +185,13 @@ class visitor:
         #     args             a list of arguments
         #     star_args        the extended *-arg value
         #     dstar_args       the extended **-arg value
-        self.src += node.node.getChildren()[0]  + '('
+        # call a function :
+        if type(node.node.getChildren()[0]) is str:
+            self.src += node.node.getChildren()[0]  + '('
+        else: # call a method :
+            if len( node.node.getChildren() ) == 2 :
+                self.src += get_source( node.node.getChildren()[0] )
+                self.src += '->' + node.node.getChildren()[1] + '('
         self.src += ', '.join( [get_source(n) for n in node.args ] )
         self.src += ')'
 
