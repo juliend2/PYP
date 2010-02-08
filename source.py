@@ -15,6 +15,8 @@ class Joie(base):
         self.prop2 = prop2
         self.prop3 = prop3
 
-    def Crier(self):
+    def Crier(self, joie):
+        if joie:
+            return '%s %s' % (self.prop1, self.prop2)
         return self.prop1+' '+self.prop2
 

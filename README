@@ -1,0 +1,33 @@
+TODO :
+
+-Faire les elif et else
+-Faire l'indentation
+-Ajouter les point-virgules (;) aux fins de lignes
+-Regler le probleme de concatenation de string pour PHP. "." au lieu de "+" qui
+est l'operateur d'addition
+-Faire aussi que ce soit possible de faire des .= au lieu de += pour concatener les
+strings
+-Finir d'integrer les / - % -= *= et /= 
+-Finir d'integrer les !== != < > <= >= 
+-permettre d'acceder a des attributs de classe comme
+parent::ParentClassMethod()
+-permettre les commentaires docstring '''... ''' qui deviennent des /* */
+-Permettre d'acceder a des methodes d'attributs : $this->attr->method();
+-implementer les arrays pour les lists et dictionaries
+-implementer les booleans et null
+-permettre les parentheses dans les statements
+-permettre les negations du type !$valeur
+-permettre d'acceder aux cles de variables : $array['cle'][0]
+-permettre ce truc : =&
+-traduire le '%s, %d' % (string, chiffre) de python pour la version php qui est
+sprintf('%s, %d', $string, $chiffre);
+
+
+Nice to have:
+
+-permettre des commentaire # qui deviennent des //
+-$this->{'nom de propriete'}->methode();
+-Faire la traduction de certaines fonctions built-in, comme str() -> strval()
+en php, int() -> intval(), etc.
+-un setting pour determiner la version de PHP que l'on compile. Si c'est 4 ou 5
+
