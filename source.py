@@ -25,6 +25,7 @@ class Joie(base):
 
     def Crier(self, joie):
         if joie:
+            print 3 % 3
             return '%s %s' % (self.prop1, self.prop2)
         else:
             return '%d' % self.prop1

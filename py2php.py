@@ -118,6 +118,8 @@ class visitor:
             self.src += ')'
         else:
             # modulo normal
+            self.src += get_source( node.left ) + ' % ' + get_source(
+            node.right )
             pass
         print 'MOD left', node.left
         print 'MOD right', node.right
