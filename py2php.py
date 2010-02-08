@@ -86,7 +86,6 @@ class visitor:
         #     nodes            
         #     dest             
         # PHP print statement takes only one parameter so we take the first one :
-        print 'PRINT', node.nodes
         self.src += 'print '+ get_source( node.nodes[0] ) 
 
     def visitName(self, node):
@@ -256,8 +255,18 @@ class visitor:
             pass # RAISE AN ERROR
 
     def visitList(self,t):
+        self.src += 'array('
         self.src += ','.join ( [ get_source(n) for n in t.nodes ])
+        self.src += ')'
 
+    def visitDict(self, node):
+        # Dict attributes
+        #     items            
+        self.src += 'array('
+        self.src += ', '.join( [get_source(k)+'=>'+get_source(v) for k,v in
+        node.items] )
+        self.src += ')'
+        print node.items
  
 def get_source(node):
     """Return the source code of the node, built by an instance of

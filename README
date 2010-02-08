@@ -6,7 +6,7 @@ TODO :
 est l'operateur d'addition
 -Faire aussi que ce soit possible de faire des .= au lieu de += pour concatener les
 strings
--Finir d'integrer les / - + -= *= et /= 
+-Finir d'integrer les -= *= et /= 
 -Finir d'integrer les !== != < > <= >= 
 -permettre d'acceder a des attributs de classe comme
 parent::ParentClassMethod()
@@ -14,7 +14,6 @@ parent::ParentClassMethod()
 -Permettre d'acceder a des methodes d'attributs : $this->attr->method();
 -implementer les arrays pour les lists et dictionaries
 -implementer les booleans et null
--permettre les parentheses dans les statements
 -permettre les negations du type !$valeur
 -permettre d'acceder aux cles de variables : $array['cle'][0]
 -permettre ce truc : =&

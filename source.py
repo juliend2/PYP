@@ -41,3 +41,9 @@ print 3.8 / 4
 print ( 4 + 4 ) / 3
 print 2 - 1
 print 3 + 3
+
+print ['elem1', 'elem2', variab, 23]
+print {
+    'key1':'value',
+    key2:value2
+    }
