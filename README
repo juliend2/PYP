@@ -1,14 +1,11 @@
 TODO :
 
--Faire l'indentation
--Ajouter les point-virgules (;) aux fins de lignes
 -Regler le probleme de concatenation de string pour PHP. "." au lieu de "+" qui
 est l'operateur d'addition
 -Faire aussi que ce soit possible de faire des .= au lieu de += pour concatener les
 strings
 *** `N'EXISTE PAS EN PYTHON -permettre d'acceder a des attributs de classe comme
 parent::ParentClassMethod()
--permettre les commentaires docstring '''... ''' qui deviennent des /* */
 -permettre ce truc : =&
 
 
@@ -16,7 +13,5 @@ Nice to have:
 
 -permettre des commentaire # qui deviennent des //
 -$this->{'nom de propriete'}->methode();
--Faire la traduction de certaines fonctions built-in, comme str() -> strval()
-en php, int() -> intval(), etc.
 -un setting pour determiner la version de PHP que l'on compile. Si c'est 4 ou 5
 

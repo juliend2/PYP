@@ -5,8 +5,14 @@ for key,value in list:
     print 'joie'
 
 for val in list:
-    var = doshit(val,attr)
+    var = int(doshit(val,attr))
     print 'joie'
+
+while val > 3:
+    dosomeshit()
+    someothershit()
+    if True:
+        exit
 
 def fonction(argu, argu2, defaut=8):
     '''doc string pour la fonction'''

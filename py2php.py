@@ -19,6 +19,11 @@ class visitor:
         self.src = ''
         self.comment_start = '/*\n'
         self.comment_end = '\n*/\n'
+        self.funcs_to_replace = {
+            'str':'strval',
+            'int':'intval',
+            'float':'floatval',
+        }
 
     def visitModule(self,t):
         # Module attributes
@@ -250,19 +255,34 @@ class visitor:
         self.src += get_source( node.body )
         self.src += '}\n'
 
+    def visitWhile(self, node):
+        # While attributes
+        #     test             
+        #     body             
+        #     else_            
+        self.src += 'while ('
+        self.src += get_source( node.test )
+        self.src += ') {\n'
+        self.src += get_source( node.body )
+        self.src += '}\n'
+
     def visitCallFunc(self, node):
         # CallFunc attributes
         #     node             expression for the callee
         #     args             a list of arguments
         #     star_args        the extended *-arg value
         #     dstar_args       the extended **-arg value
+        
         # call a function :
         if type(node.node.getChildren()[0]) is str:
-            # if the first letter is a uppercase, we have an instanciation:
+            # if it's an instanciation:
             if re.match('^[A-Z]', node.node.getChildren()[0] ):
                 self.src += 'new ' + node.node.getChildren()[0]  + '('
-            else: # if the first letter is a lowercase, we have a function:
-                self.src += node.node.getChildren()[0] + '('
+            else: # we have a function:
+                funcname = node.node.getChildren()[0]
+                if self.funcs_to_replace.has_key(funcname):
+                    funcname = self.funcs_to_replace[funcname]
+                self.src += funcname + '('
         else: # call a method :
             if len( node.node.getChildren() ) == 2 :
                 self.src += get_source( node.node.getChildren()[0] )
@@ -327,7 +347,8 @@ def add_semicolons(code):
             in_comment = True
         elif line.endswith('*/'):
             in_comment = False
-        if line.strip() != '' and not in_comment and not (line.endswith('}') or line.endswith('{')):
+        if line.strip() != '' and not in_comment and not (line.endswith('}') or
+        line.endswith('{') or line.endswith('*/')):
             new_lines.append( line + LINEEND )
         else:
             new_lines.append( line )
