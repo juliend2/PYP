@@ -110,7 +110,6 @@ class visitor:
         self.src += 'print '+ get_source( node.nodes[0] ) 
 
     def visitName(self, node):
-        print 'NAME',node.name
         if node.name == 'self':
             self.src += '$this'
         elif node.name == 'False':
@@ -183,7 +182,6 @@ class visitor:
         # Assign attributes
         #     nodes            a list of assignment targets, one per equal sign
         #     expr             the value being assigned
-        print 'Assign',node.nodes[0]
         parsed_expr = get_source( node.expr )
         if ( len(node.nodes)==1 and 
             type(node.nodes[0].getChildren()[0]) is StringType and 
@@ -310,7 +308,6 @@ class visitor:
         if re.match( '^[_A-Z]+$', node.name ): # it's a constant if ALL CAPS
             self.src += node.name
         else:
-            print 'ELSE'
             self.src += '$%s' % node.name
 
     def visitAssTuple(self, node):
