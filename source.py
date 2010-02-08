@@ -9,4 +9,12 @@ def fonction(argu, argu2, defaut=8):
     else:
         return argu
 
+class Joie(base):
+    def __init__(self, prop1, prop2, prop3='verbe'):
+        self.prop1 = prop1
+        self.prop2 = prop2
+        self.prop3 = prop3
+
+    def Crier(self):
+        return self.prop1 +' '+self.prop2
 

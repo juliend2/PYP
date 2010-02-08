@@ -18,26 +18,44 @@ class visitor:
         self.src += '<?php\n' + get_source(t.getChildNodes()[0])
     
     def visitStmt(self,node):
-        self.src += ';\n'.join( [ get_source(n) for n in node.nodes ])
-    
+        print '***stmt nodes****',len(node.nodes), node.nodes
+        self.src += '\n'.join( [ get_source(n) for n in node.nodes ]) + '\n'
+
+    def visitClass(self, node):
+        # Class attributes
+        #     name             the name of the class, a string
+        #     bases            a list of base classes
+        #     doc              doc string, a string or <code>None</code>
+        #     code             the body of the class statement
+        if node.doc != None:
+            self.src += '/* ' + node.doc + ' */' 
+        self.src += 'class %s ' % node.name
+        if len(node.bases) > 0:
+            self.src += 'extends %s' % get_source( node.bases[0] )[1:] # php has no multiple inheritance
+        self.src += ' {\n'
+        self.src += get_source( node.code )
+        self.src += '}\n'
+
     def visitFunction(self, node):
-        print 'function argnames', node.argnames
-        print 'function defaults', node.defaults
+        # Function attributes
+        #     name             name used in def, a string
+        #     argnames         list of argument names, as strings
+        #     defaults         list of default values
+        #     flags            xxx
+        #     doc              doc string, a string or <code>None</code>
+        #     code             the body of the function
+        print 'node.code',node.code
         self.src += 'function %s (' % node.name
         nb_defaults = len(node.defaults)
         if nb_defaults > 0 : # there are some default args
             simple_args = node.argnames[:len(node.argnames)-nb_defaults]
             assigned_args = node.argnames[len(node.argnames)-nb_defaults:]
-            print 'simple_args', simple_args
-            print 'assigned_args', assigned_args
             assg_args_w_vals = []
             j = 0
             for assign in assigned_args:
                 valu = get_source( node.defaults[j] )
-                print '%s = %s' % (assign,valu)
                 assg_args_w_vals.append( '%s = %s' % (assign,valu) )
                 j+=1
-            print simple_args+assg_args_w_vals 
             self.src += ', '.join( ['$%s'%n for n in
             simple_args+assg_args_w_vals ])
         else: 
@@ -46,22 +64,50 @@ class visitor:
         self.src += get_source( node.code )
         self.src += '}\n'
 
+    def visitGetattr(self, node):
+        # Getattr attributes
+        #     expr             
+        #     attrname         
+        self.src += get_source( node.expr ) + '->' + node.attrname
+        
+    def visitAssAttr(self, node):
+        # AssAttr attributes
+        #     expr             expression on the left-hand side of the dot
+        #     attrname         the attribute name, a string
+        #     flags            XXX
+        self.src += get_source( node.expr ) + '->'
+        self.src += node.attrname
+        if node.flags == 'OP_ASSIGN':
+            self.src += ' = '
+
     def visitReturn(self, node):
-        self.src += 'return '+get_source(node.value) + ';\n'
-    
+        self.src += 'return '+get_source(node.value)
+
     def visitName(self, node):
-        self.src += '$%s'%node.name
+        if node.name == 'self':
+            self.src += '$this'
+        else:
+            self.src += '$%s'%node.name
 
     def visitConst(self, node):
         # Const attributes
         #     value            
-        self.src += str(node.value)
+        if type(node.value) is str:
+            self.src += "'%s'" % node.value
+        else:
+            self.src += str(node.value)
 
     def visitMul(self, node):
         # Mul attributes
         #     left             
         #     right            
         self.src += get_source( node.left ) + ' * ' + get_source( node.right )
+
+    def visitAdd(self, node):
+        # Add attributes
+        #     left             left operand
+        #     right            right operand
+        self.src += get_source( node.left ) + ' + ' + get_source( node.right )
 
     def visitAugAssign(self, node):
         # AugAssign attributes
@@ -77,6 +123,11 @@ class visitor:
         #     nodes            
         self.src += ' || '.join( [ get_source( n ) for n in node.nodes ] )
     
+    def visitAnd(self, node):
+        # And attributes
+        #     nodes            list of operands
+        self.src += ' && '.join( [ get_source( n ) for n in node.nodes ] )
+
     def visitCompare(self, node):
         # Compare attributes
         #     expr             
