@@ -59,3 +59,5 @@ print 32 <= 32
 print 32 >= 32
 var *= 1
 var /= 1
+var = False
+var = True
