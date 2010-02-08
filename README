@@ -9,7 +9,6 @@ strings
 -permettre d'acceder a des attributs de classe comme
 parent::ParentClassMethod()
 -permettre les commentaires docstring '''... ''' qui deviennent des /* */
--implementer les booleans et null
 -permettre les negations du type !$valeur
 -permettre ce truc : =&
 

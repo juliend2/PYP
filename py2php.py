@@ -92,6 +92,12 @@ class visitor:
     def visitName(self, node):
         if node.name == 'self':
             self.src += '$this'
+        elif node.name == 'False':
+            self.src += 'false'
+        elif node.name == 'True':
+            self.src += 'true'
+        elif node.name == 'None':
+            self.src += 'null'
         else:
             self.src += '$%s'%node.name
 

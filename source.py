@@ -61,3 +61,6 @@ var *= 1
 var /= 1
 var = False
 var = True
+print True
+print False
+print None
