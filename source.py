@@ -1,4 +1,10 @@
+for key,value in list:
+    dosomething()
+    print 'joie'
 
+for val in list:
+    var = doshit(val,attr)
+    print 'joie'
 
 def fonction(argu, argu2, defaut=8):
     if argu == 2 > 3 or argu == 4:
@@ -6,6 +12,8 @@ def fonction(argu, argu2, defaut=8):
         return argu * 2
     elif argu == 3:
         return 'trois'
+    elif argu == 4:
+        return 'quatre'
     else:
         return argu
 

@@ -44,7 +44,6 @@ class visitor:
         #     flags            xxx
         #     doc              doc string, a string or <code>None</code>
         #     code             the body of the function
-        print 'node.code',node.code
         self.src += 'function %s (' % node.name
         nb_defaults = len(node.defaults)
         if nb_defaults > 0 : # there are some default args
@@ -77,8 +76,6 @@ class visitor:
         #     flags            XXX
         self.src += get_source( node.expr ) + '->'
         self.src += node.attrname
-        if node.flags == 'OP_ASSIGN':
-            self.src += ' = '
 
     def visitReturn(self, node):
         self.src += 'return '+get_source(node.value)
@@ -108,6 +105,13 @@ class visitor:
         #     left             left operand
         #     right            right operand
         self.src += get_source( node.left ) + ' + ' + get_source( node.right )
+
+    def visitAssign(self, node):
+        # Assign attributes
+        #     nodes            a list of assignment targets, one per equal sign
+        #     expr             the value being assigned
+        self.src += ', '.join( [get_source( n ) for n in node.nodes ] ) + ' = ' 
+        self.src += get_source( node.expr )
 
     def visitAugAssign(self, node):
         # AugAssign attributes
@@ -144,14 +148,59 @@ class visitor:
         for test in node.tests:
             if i==0:
                 self.src += 'if ('
-                # for compare in test:
-                print 'test',test[0]
-                self.src += get_source( test[0] )
-                self.src += ') {\n'
-                print 'ici le bloc', test[1:]
-                self.src += ''.join( [ get_source(n) for n in test[1:] ] )
-                self.src += '}\n'
+            else:
+                self.src += 'elseif ('
+            # for compare in test:
+            print 'test : ', test
+            self.src += get_source( test[0] )
+            self.src += ') {\n'
+            self.src += ''.join( [ get_source(n) for n in test[1:] ] )
+            self.src += '}\n'
             i+= 1
+        if node.else_:
+            self.src += 'else {\n'
+            self.src += get_source( node.else_ )
+            self.src += '}\n'
+
+    def visitFor(self, node):
+        # For attributes
+        #     assign           
+        #     list             
+        #     body             
+        #     else_            
+        self.src += 'foreach ('+get_source(node.list)+' as '
+        self.src += get_source( node.assign ) + ') {\n'
+        self.src += get_source( node.body )
+        self.src += '}\n'
+
+    def visitCallFunc(self, node):
+        # CallFunc attributes
+        #     node             expression for the callee
+        #     args             a list of arguments
+        #     star_args        the extended *-arg value
+        #     dstar_args       the extended **-arg value
+        self.src += node.node.getChildren()[0]  + '('
+        self.src += ', '.join( [get_source(n) for n in node.args ] )
+        self.src += ')'
+
+    def visitAssName(self, node):
+        # AssName attributes
+        #     name             name being assigned to
+        #     flags            XXX
+        self.src += '$%s' % node.name
+
+    def visitAssTuple(self, node):
+        # AssTuple attributes
+        #     nodes            list of tuple elements being assigned to
+        # ** Tuple assignment does not exist in PHP so i'm gonna use it for the
+        # foreach key => value pair, or value only if there is only one element
+        if len(node.nodes) == 2:
+            self.src += get_source(node.nodes[0]) + ' => ' 
+            self.src += get_source(node.nodes[1])
+        elif len(node.nodes) == 1:
+            self.src += get_source(node.nodes[0])
+        else:
+            pass # RAISE AN ERROR
 
     def visitList(self,t):
         self.src += ','.join ( [ get_source(n) for n in t.nodes ])

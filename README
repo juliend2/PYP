@@ -21,6 +21,7 @@ parent::ParentClassMethod()
 -permettre ce truc : =&
 -traduire le '%s, %d' % (string, chiffre) de python pour la version php qui est
 sprintf('%s, %d', $string, $chiffre);
+-implementer les while et foreach
 
 
 Nice to have:
