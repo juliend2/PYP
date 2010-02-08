@@ -86,6 +86,7 @@ class visitor:
         #     nodes            
         #     dest             
         # PHP print statement takes only one parameter so we take the first one :
+        print 'PRINT', node.nodes
         self.src += 'print '+ get_source( node.nodes[0] ) 
 
     def visitName(self, node):
@@ -108,7 +109,6 @@ class visitor:
         #     right            
         left = get_source( node.left )
         if '%' in left and type(left) is str and left.startswith("'"):
-            print 'right', node.right.getChildren()
             # sprintf
             self.src += 'sprintf(' + left + ', '
             if str(node.right.__class__) == 'compiler.ast.Tuple':
@@ -118,24 +118,37 @@ class visitor:
             self.src += ')'
         else:
             # modulo normal
-            self.src += get_source( node.left ) + ' % ' + get_source(
-            node.right )
+            self.src += '('+get_source( node.left ) + ' % ' + get_source(
+            node.right )+')'
             pass
-        print 'MOD left', node.left
-        print 'MOD right', node.right
-        
 
     def visitMul(self, node):
         # Mul attributes
         #     left             
         #     right            
-        self.src += get_source( node.left ) + ' * ' + get_source( node.right )
+        self.src += '('+get_source( node.left ) + ' * ' + get_source(
+        node.right )+')'
+
+    def visitDiv(self, node):
+        # Div attributes
+        #     left             
+        #     right            
+        self.src += '('+get_source( node.left ) + ' / ' + get_source(
+        node.right )+')'
 
     def visitAdd(self, node):
         # Add attributes
         #     left             left operand
         #     right            right operand
-        self.src += get_source( node.left ) + ' + ' + get_source( node.right )
+        self.src += '('+get_source( node.left ) + ' + ' + get_source(
+        node.right )+')'
+
+    def visitSub(self, node):
+        # Sub attributes
+        #     left             
+        #     right            
+        self.src += '('+get_source( node.left ) + ' - ' + get_source(
+        node.right )+')'
 
     def visitAssign(self, node):
         # Assign attributes

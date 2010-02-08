@@ -34,3 +34,10 @@ class Joie(base):
 obj = Joie('prop1', 'prop2', 'prop3')
 print obj.Crier('joie')
 print obj.prop1.Crier('torp')
+
+print 2 + 3
+print 4 / 2
+print 3.8 / 4
+print ( 4 + 4 ) / 3
+print 2 - 1
+print 3 + 3
