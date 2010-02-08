@@ -79,3 +79,6 @@ if not value:
     print 'hoy'
 
 global var1, var2
+
+CONSTANTE = 2
+mavar = CONSTANTE

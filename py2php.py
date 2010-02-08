@@ -1,6 +1,9 @@
+#!/usr/bin/python
+
 import re
+import types
 import compiler
-from types import TupleType
+from types import StringType
 
 INDENT = '    '
 LINEEND = ';'
@@ -107,6 +110,7 @@ class visitor:
         self.src += 'print '+ get_source( node.nodes[0] ) 
 
     def visitName(self, node):
+        print 'NAME',node.name
         if node.name == 'self':
             self.src += '$this'
         elif node.name == 'False':
@@ -115,6 +119,8 @@ class visitor:
             self.src += 'true'
         elif node.name == 'None':
             self.src += 'null'
+        elif re.match( '^[_A-Z]+$', node.name ): # it's a constant if ALL CAPS
+            self.src += node.name
         else:
             self.src += '$%s'%node.name
 
@@ -177,8 +183,15 @@ class visitor:
         # Assign attributes
         #     nodes            a list of assignment targets, one per equal sign
         #     expr             the value being assigned
-        self.src += ', '.join( [get_source( n ) for n in node.nodes ] ) + ' = ' 
-        self.src += get_source( node.expr )
+        print 'Assign',node.nodes[0]
+        parsed_expr = get_source( node.expr )
+        if ( len(node.nodes)==1 and 
+            type(node.nodes[0].getChildren()[0]) is StringType and 
+            re.match('^[_A-Z]+$', node.nodes[0].getChildren()[0]) ):
+            self.src += 'define("'+node.nodes[0].getChildren()[0]+'", '+parsed_expr+')' 
+        else:
+            self.src += ', '.join( [get_source( n ) for n in node.nodes ] ) + ' = ' 
+            self.src += parsed_expr
 
     def visitAugAssign(self, node):
         # AugAssign attributes
@@ -294,7 +307,11 @@ class visitor:
         # AssName attributes
         #     name             name being assigned to
         #     flags            XXX
-        self.src += '$%s' % node.name
+        if re.match( '^[_A-Z]+$', node.name ): # it's a constant if ALL CAPS
+            self.src += node.name
+        else:
+            print 'ELSE'
+            self.src += '$%s' % node.name
 
     def visitAssTuple(self, node):
         # AssTuple attributes
@@ -373,3 +390,11 @@ def indent_source(code):
 if __name__ == '__main__':
     unindented_source = get_source(compiler.parseFile('source.py'))
     print indent_source(add_semicolons(unindented_source))
+# else:
+#     import sys, os
+# 
+#     print 'sys.argv[0] =', sys.argv[1]
+#     pathname = os.path.dirname(sys.argv[1])        
+#     print 'path =', pathname
+#     print 'full path =', os.path.abspath(pathname) 
+#     
