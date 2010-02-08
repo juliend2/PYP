@@ -86,7 +86,6 @@ class visitor:
         #     nodes            
         #     dest             
         # PHP print statement takes only one parameter so we take the first one :
-        print 'nodes', node.nodes
         self.src += 'print '+ get_source( node.nodes[0] ) 
 
     def visitName(self, node):
@@ -181,6 +180,16 @@ class visitor:
         # And attributes
         #     nodes            list of operands
         self.src += ' && '.join( [ get_source( n ) for n in node.nodes ] )
+
+    def visitNot(self, node):
+        # Not attributes
+        #     expr             
+        self.src += '!%s' % get_source(node.expr)
+
+    def visitGlobal(self, node):
+        # Global attributes
+        #     names            
+        self.src += 'global '+ ( ', '.join( ['$%s' % name for name in node.names ] ) )
 
     def visitCompare(self, node):
         # Compare attributes

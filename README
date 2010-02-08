@@ -6,10 +6,9 @@ TODO :
 est l'operateur d'addition
 -Faire aussi que ce soit possible de faire des .= au lieu de += pour concatener les
 strings
--permettre d'acceder a des attributs de classe comme
+*** `N'EXISTE PAS EN PYTHON -permettre d'acceder a des attributs de classe comme
 parent::ParentClassMethod()
 -permettre les commentaires docstring '''... ''' qui deviennent des /* */
--permettre les negations du type !$valeur
 -permettre ce truc : =&
 
 

@@ -64,3 +64,8 @@ var = True
 print True
 print False
 print None
+
+if not value:
+    print 'hoy'
+
+global var1, var2
