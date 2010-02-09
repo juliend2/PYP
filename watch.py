@@ -30,6 +30,7 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# -*- coding: utf-8 -*-
 import re
 import os, sys, time
 import fnmatch
@@ -85,25 +86,25 @@ class GlobDirectoryWalker:
 
 def process(source_path, dest_path):
     print 'updating the PHP files.'
-    for file in GlobDirectoryWalker(source_path, "*.py?"):
+    for file in GlobDirectoryWalker(source_path, "*.py*"):
+        # print 'file',file
         if file.endswith('.pyc'): # skip the .pyc files
             continue
         (source_filepath, source_filename) = os.path.split(file)
         (source_shortname, source_extension) = os.path.splitext(source_filename)
-        if source_shortname.startswith('._'):
+        if (source_shortname.startswith('._') or
+        source_shortname.startswith('.')):
             continue
         if file.endswith('.py'):
             unindented_source = py2php.get_source(compiler.parseFile(file))
             phpcode = py2php.indent_source(py2php.add_semicolons(unindented_source))       
         else: # .pyp file
-            print 'ELSE'
             reg = re.compile('(<\?pyp.*?\?>)', re.S) # trouver les <?pyp .. ?>
             matched = reg.split(open(file).read())
             phpcode = ''
             for match in matched:
                 if match.startswith('<?pyp') and match.endswith('?>'):
                     pypCode = match[5:-2]
-                    print 'pypCode', pypCode
                     unindented_source = py2php.get_source(compiler.parse(pypCode))
                     phpcode += py2php.indent_source(py2php.add_semicolons(unindented_source))
                 else:

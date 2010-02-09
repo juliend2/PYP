@@ -7,16 +7,11 @@ strings
 *** `N'EXISTE PAS EN PYTHON -permettre d'acceder a des attributs de classe comme
 parent::ParentClassMethod()
 -permettre ce truc : =&
--permettre les super-globales ($_GET, $_POST, $_REQUEST, etc) parce que sinon
-elles sont parsees en CONSTANTE car leur nom est [_A-Z]+
 -parser les quelques methodes cool du python dans leur equivalent en fonction
 php. Genre :
     * ', '.join(list) deviandrait implode(', ', $list) 
     * str.split('-', 1) deviendrait explode('-', $str, 1)
     * list.append('element') deviendrait array_push($list, 'element')
--faire un parsing de fichiers de templates dans lesquels on peut mettre du
-python ainsi que du php et html. Les balises seraient <?pyp .. ?> et
-l'extension serait .pyp
 
 Nice to have:
 

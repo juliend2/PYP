@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 import re
 import types
@@ -127,7 +128,7 @@ class visitor:
             self.src += 'true'
         elif node.name == 'None':
             self.src += 'null'
-        elif re.match( '^[_A-Z]+$', node.name ): # it's a constant if ALL CAPS
+        elif re.match( '^[A-Z][_A-Z]*$', node.name ): # it's a constant if ALL CAPS
             self.src += node.name
         else:
             self.src += '$%s'%node.name
@@ -194,9 +195,11 @@ class visitor:
         parsed_expr = get_source( node.expr )
         if ( len(node.nodes)==1 and 
             type(node.nodes[0].getChildren()[0]) is StringType and 
-            re.match('^[_A-Z]+$', node.nodes[0].getChildren()[0]) ):
+            re.match('^[A-Z][_A-Z]*$', node.nodes[0].getChildren()[0]) ):
+            print 'IF'
             self.src += 'define("'+node.nodes[0].getChildren()[0]+'", '+parsed_expr+')' 
         else:
+            print 'ELSE', node.nodes
             self.src += ', '.join( [get_source( n ) for n in node.nodes ] ) + ' = ' 
             self.src += parsed_expr
 
@@ -333,7 +336,7 @@ class visitor:
         # AssName attributes
         #     name             name being assigned to
         #     flags            XXX
-        if re.match( '^[_A-Z]+$', node.name ): # it's a constant if ALL CAPS
+        if re.match( '^[A-Z][_A-Z]*$', node.name ): # it's a constant if ALL CAPS
             self.src += node.name
         else:
             self.src += '$%s' % node.name
@@ -369,7 +372,7 @@ class visitor:
         #     expr             
         #     flags            
         #     subs             
-        if node.flags == 'OP_APPLY':
+        if node.flags == 'OP_ASSIGN' or node.flags == 'OP_APPLY':
             self.src += get_source(node.expr) +'['
             self.src += get_source(node.subs[0]) # [0] parce qu'on ne peut faire de [0:2] en PHP
             self.src += ']'
