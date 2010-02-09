@@ -402,7 +402,8 @@ def indent_source(code):
             tab_count -= 1
         val = (INDENT*tab_count) + line
         indentation = INDENT*tab_count
-        new_lines.append( val )
+        if not (line.strip() == '' and tab_count != 0):
+            new_lines.append( val )
         if line.endswith('{'):
             tab_count += 1
     return '\n'.join(new_lines)
