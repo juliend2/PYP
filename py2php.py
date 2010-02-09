@@ -102,6 +102,10 @@ class visitor:
     def visitReturn(self, node):
         self.src += 'return '+get_source(node.value)
 
+    def visitContinue(self, node):
+        # Continue attributes
+        self.src += 'continue'
+
     def visitPrintnl(self, node):
         # Printnl attributes
         #     nodes            
@@ -255,6 +259,25 @@ class visitor:
             self.src += get_source( node.else_ )
             self.src += '}\n'
 
+    def visitTryExcept(self, node):
+        # TryExcept attributes
+        #     body             
+        #     handlers         
+        #     else_            
+        self.src += 'try {\n'
+        self.src += get_source( node.body )
+        self.src += '}\n' 
+        for handler in node.handlers:
+            self.src += 'catch ('
+            if handler[1] == None:
+                self.src += 'Exception '+get_source(handler[0])
+            else:
+                self.src += handler[0].getChildren()[0] + ' '
+                self.src += get_source( handler[1] )
+            self.src += ') {'
+            self.src += get_source( handler[2] )
+            self.src += '}\n'
+
     def visitFor(self, node):
         # For attributes
         #     assign           
@@ -361,8 +384,8 @@ def add_semicolons(code):
             in_comment = True
         elif line.endswith('*/'):
             in_comment = False
-        if line.strip() != '' and not in_comment and not (line.endswith('}') or
-        line.endswith('{') or line.endswith('*/')):
+        if (line.strip() != '<?php' and line.strip() != '' and not in_comment and not (line.endswith('}') or
+        line.endswith('{') or line.endswith('*/'))):
             new_lines.append( line + LINEEND )
         else:
             new_lines.append( line )
