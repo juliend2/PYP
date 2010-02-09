@@ -107,6 +107,10 @@ class visitor:
         # Continue attributes
         self.src += 'continue'
 
+    def visitBreak(self, node):
+        # Break attributes
+        self.src += 'break'
+
     def visitPrintnl(self, node):
         # Printnl attributes
         #     nodes            

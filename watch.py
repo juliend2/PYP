@@ -1,5 +1,5 @@
 # Autoreloading launcher.
-# Borrowed from the Django project (http://www.djangoproject.com).
+# Most of this code is borrowed from the Django project (http://www.djangoproject.com).
 # Django borrowed if from Peter Hunt and the CherryPy project 
 # (http://www.cherrypy.org).
 # Some taken from Ian Bicking's Paste (http://pythonpaste.org/).
@@ -30,6 +30,7 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import re
 import os, sys, time
 import fnmatch
 import compiler
@@ -84,22 +85,41 @@ class GlobDirectoryWalker:
 
 def process(source_path, dest_path):
     print 'updating the PHP files.'
-    for file in GlobDirectoryWalker(source_path, "*.py"):
+    for file in GlobDirectoryWalker(source_path, "*.py?"):
+        if file.endswith('.pyc'): # skip the .pyc files
+            continue
         (source_filepath, source_filename) = os.path.split(file)
         (source_shortname, source_extension) = os.path.splitext(source_filename)
-        unindented_source = py2php.get_source(compiler.parseFile(file))
+        if source_shortname.startswith('._'):
+            continue
+        if file.endswith('.py'):
+            unindented_source = py2php.get_source(compiler.parseFile(file))
+            phpcode = py2php.indent_source(py2php.add_semicolons(unindented_source))       
+        else: # .pyp file
+            print 'ELSE'
+            reg = re.compile('(<\?pyp.*?\?>)', re.S) # trouver les <?pyp .. ?>
+            matched = reg.split(open(file).read())
+            phpcode = ''
+            for match in matched:
+                if match.startswith('<?pyp') and match.endswith('?>'):
+                    pypCode = match[5:-2]
+                    print 'pypCode', pypCode
+                    unindented_source = py2php.get_source(compiler.parse(pypCode))
+                    phpcode += py2php.indent_source(py2php.add_semicolons(unindented_source))
+                else:
+                    phpcode += match
         directories = source_filepath[len(sys.argv[1]):]
+        # create the subdirectories :
         try :
             os.makedirs(dest_path + '/' + directories)
         except OSError:
             pass
-        phpcode = py2php.indent_source(py2php.add_semicolons(unindented_source))       
         if len(directories) > 0:
             dir_file = directories + '/' + source_shortname
         else:
             dir_file = source_shortname
         phpfile = open(dest_path +'/'+ dir_file + '.php', 'w')
-        phpfile.write( phpcode )
+        phpfile.write( phpcode ) # write the converted code
         phpfile.close()
 
 def code_changed(source_path):
