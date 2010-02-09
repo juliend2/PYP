@@ -83,14 +83,22 @@ class GlobDirectoryWalker:
                     return fullname
 
 def process(source_path, dest_path):
+    print 'updating the PHP files.'
     for file in GlobDirectoryWalker(source_path, "*.py"):
-        print 'process file',file
-        print 'dest_path',dest_path
         (source_filepath, source_filename) = os.path.split(file)
         (source_shortname, source_extension) = os.path.splitext(source_filename)
         unindented_source = py2php.get_source(compiler.parseFile(file))
+        directories = source_filepath[len(sys.argv[1]):]
+        try :
+            os.makedirs(dest_path + '/' + directories)
+        except OSError:
+            pass
         phpcode = py2php.indent_source(py2php.add_semicolons(unindented_source))       
-        phpfile = open(dest_path + source_shortname + '.php', 'w')
+        if len(directories) > 0:
+            dir_file = directories + '/' + source_shortname
+        else:
+            dir_file = source_shortname
+        phpfile = open(dest_path +'/'+ dir_file + '.php', 'w')
         phpfile.write( phpcode )
         phpfile.close()
 
