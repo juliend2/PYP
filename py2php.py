@@ -36,6 +36,7 @@ class visitor:
         if t.doc:
             self.src += self.comment_start + t.doc + self.comment_end
         self.src += get_source(t.getChildNodes()[0])
+        self.src += '?>'
     
     def visitStmt(self,node):
         #print '***stmt nodes****',len(node.nodes), node.nodes
@@ -384,8 +385,16 @@ def add_semicolons(code):
             in_comment = True
         elif line.endswith('*/'):
             in_comment = False
-        if (line.strip() != '<?php' and line.strip() != '' and not in_comment and not (line.endswith('}') or
-        line.endswith('{') or line.endswith('*/'))):
+        if (line.strip() != '<?php' and
+            line.strip() != '?>' and
+            line.strip() != '' and 
+            not in_comment and 
+            not (
+                line.endswith('}') or
+                line.endswith('{') or 
+                line.endswith('*/')
+            )
+        ):
             new_lines.append( line + LINEEND )
         else:
             new_lines.append( line )
@@ -411,11 +420,3 @@ def indent_source(code):
 if __name__ == '__main__':
     unindented_source = get_source(compiler.parseFile('source.py'))
     print indent_source(add_semicolons(unindented_source))
-# else:
-#     import sys, os
-# 
-#     print 'sys.argv[0] =', sys.argv[1]
-#     pathname = os.path.dirname(sys.argv[1])        
-#     print 'path =', pathname
-#     print 'full path =', os.path.abspath(pathname) 
-#     
