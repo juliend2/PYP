@@ -1,12 +1,8 @@
 TODO :
 
--Regler le probleme de concatenation de string pour PHP. "." au lieu de "+" qui
-est l'operateur d'addition
--Faire aussi que ce soit possible de faire des .= au lieu de += pour concatener les
-strings
 *** `N'EXISTE PAS EN PYTHON -permettre d'acceder a des attributs de classe comme
 parent::ParentClassMethod()
--permettre ce truc : =&
+-permettre ce truc : =& (??)
 -parser les quelques methodes cool du python dans leur equivalent en fonction
 php. Genre :
     * ', '.join(list) deviandrait implode(', ', $list) 

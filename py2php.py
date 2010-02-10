@@ -308,8 +308,10 @@ class visitor(visitor_base.VisitorSkeleton):
         for comp in node.ops:
             if comp[0] == '!=':
                 operator = '!=='
-            elif comp[0] == '==' or comp[0] == 'is':
+            elif comp[0] == '==':
                 operator = '==='
+            elif comp[0] == 'is':
+                raise visitor_base.NotImplementedException('IS keyword')
             else:
                 operator = comp[0]
             self.src += ' '+operator+' ' + get_source( comp[1] )
@@ -422,7 +424,7 @@ class visitor(visitor_base.VisitorSkeleton):
         elif len(node.nodes) == 1:
             self.src += get_source(node.nodes[0])
         else:
-            pass # RAISE AN ERROR
+            raise visitor_base.NotImplementedException('Tuple assignment does not exist in PHP')
 
     def visitList(self,t):
         self.src += 'array('
