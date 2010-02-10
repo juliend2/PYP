@@ -4,6 +4,7 @@
 import re
 import types
 import compiler
+import visitor_base
 from types import StringType
 
 INDENT = '    '
@@ -13,7 +14,7 @@ PHPVERSION = 5
 current_class_name = ''
 is_parsing_class = False
 
-class visitor:
+class visitor(visitor_base.VisitorSkeleton):
     """Instances of ge_visitor are used as the visitor argument to 
     compiler.walk(tree,visitor) where tree is an AST tree built by
     compiler.parse
@@ -123,6 +124,11 @@ class visitor:
         self.src += get_source( node.expr ) + '->'
         self.src += node.attrname
 
+    def visitDiscard(self, node):
+        # Discard attributes
+        #     expr             
+        self.src += get_source( node.expr )
+
     def visitReturn(self, node):
         self.src += 'return '+get_source(node.value)
 
@@ -217,6 +223,16 @@ class visitor:
         #     right            
         self.src += '('+get_source( node.left ) + ' - ' + get_source(
         node.right )+')'
+
+    def visitUnaryAdd(self, node):
+        # UnaryAdd attributes
+        #     expr             
+        self.src += '+'+get_source( node.expr )
+
+    def visitUnarySub(self, node):
+        # UnarySub attributes
+        #     expr             
+        self.src += '-'+get_source( node.expr )
 
     def visitAssign(self, node):
         # Assign attributes
