@@ -173,7 +173,7 @@ class visitor:
         if '%' in left and type(left) is str and left.startswith('"'):
             # sprintf
             self.src += 'sprintf(' + left + ', '
-            if str(node.right.__class__) == 'compiler.ast.Tuple':
+            if node.right.__class__ is compiler.ast.Tuple:
                 self.src += ', '.join( [ get_source(n) for n in node.right ] )
             else:
                 self.src +=  get_source(node.right)
@@ -202,8 +202,6 @@ class visitor:
         # Add attributes
         #     left             left operand
         #     right            right operand
-        print 'left',node.left
-        print 'right', node.right
         if ((node.left.__class__ is compiler.ast.Const and 
         type(node.left.getChildren()[0]) is str) or
         (node.right.__class__ is compiler.ast.Const and
@@ -238,9 +236,33 @@ class visitor:
         #     node             
         #     op               
         #     expr             
-        self.src += get_source( node.node )
-        self.src += ' '+node.op+' '
-        self.src += get_source( node.expr )
+        def nodeLoop(node):
+            try:
+                if node.getChildren()[0].__class__ is compiler.ast.Add:
+                    return nodeLoop(node.getChildren()[0])
+                elif node.getChildren()[0].__class__ is compiler.ast.Const:
+                    return node.getChildren()[0]
+                else:
+                    return node
+            except Exception, e:
+                return node
+                    
+        if (node.op == '+=' and
+        node.expr.__class__ is compiler.ast.Const and
+        type(node.expr.getChildren()[0]) is str):
+            self.src += get_source( node.node )
+            self.src += ' .= '
+            self.src += get_source( node.expr )
+        else:
+            try:
+                if (nodeLoop(node.expr).__class__ is compiler.ast.Const and
+                type(nodeLoop(node.expr).getChildren()[0]) is str):
+                    node.op = '.='
+            except Exception, e:
+                pass
+            self.src += get_source( node.node )
+            self.src += ' '+node.op+' '
+            self.src += get_source( node.expr )
 
     def visitOr(self, node):
         # Or attributes
