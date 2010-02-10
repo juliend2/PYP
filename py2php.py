@@ -8,6 +8,10 @@ from types import StringType
 
 INDENT = '    '
 LINEEND = ';'
+PHPVERSION = 5
+# used for php4 constructor function name (that is the same as the class name
+current_class_name = ''
+is_parsing_class = False
 
 class visitor:
     """Instances of ge_visitor are used as the visitor argument to 
@@ -28,6 +32,8 @@ class visitor:
             'int':'intval',
             'float':'floatval',
         }
+        self.magic_constants = ['__FILE__', '__LINE__', '__FUNCTION__',
+        '__CLASS__','__METHOD__']
 
     def visitModule(self,t):
         # Module attributes
@@ -49,6 +55,9 @@ class visitor:
         #     bases            a list of base classes
         #     doc              doc string, a string or <code>None</code>
         #     code             the body of the class statement
+        global current_class_name, is_parsing_class
+        is_parsing_class = True
+        current_class_name = node.name
         if node.doc != None:
             self.src += self.comment_start + node.doc + self.comment_end
         self.src += 'class %s ' % node.name
@@ -57,6 +66,7 @@ class visitor:
         self.src += ' {\n'
         self.src += get_source( node.code )
         self.src += '}\n'
+        is_parsing_class = False
 
     def visitFunction(self, node):
         # Function attributes
@@ -66,8 +76,18 @@ class visitor:
         #     flags            xxx
         #     doc              doc string, a string or <code>None</code>
         #     code             the body of the function
+        global current_class_name, is_parsing_class
         if node.doc != None:
             self.src += self.comment_start + node.doc + self.comment_end
+        if (PHPVERSION == 5 and 
+        node.name == '__init__' and 
+        is_parsing_class):
+            node.name = '__construct'
+        elif (PHPVERSION == 4 and
+        node.name == '__init__' and
+        is_parsing_class and
+        current_class_name != ''):
+            node.name = current_class_name
         self.src += 'function %s (' % node.name
         nb_defaults = len(node.defaults)
         if nb_defaults > 0 : # there are some default args
@@ -130,6 +150,8 @@ class visitor:
             self.src += 'null'
         elif re.match( '^[A-Z][_A-Z]*$', node.name ): # it's a constant if ALL CAPS
             self.src += node.name
+        elif (node.name in self.magic_constants):
+            self.src += node.name
         else:
             self.src += '$%s'%node.name
 
@@ -137,7 +159,7 @@ class visitor:
         # Const attributes
         #     value            
         if type(node.value) is str:
-            self.src += "'%s'" % node.value
+            self.src += '"%s"' % node.value
         else:
             self.src += str(node.value)
 
@@ -146,7 +168,7 @@ class visitor:
         #     left             
         #     right            
         left = get_source( node.left )
-        if '%' in left and type(left) is str and left.startswith("'"):
+        if '%' in left and type(left) is str and left.startswith('"'):
             # sprintf
             self.src += 'sprintf(' + left + ', '
             if str(node.right.__class__) == 'compiler.ast.Tuple':
@@ -196,10 +218,8 @@ class visitor:
         if ( len(node.nodes)==1 and 
             type(node.nodes[0].getChildren()[0]) is StringType and 
             re.match('^[A-Z][_A-Z]*$', node.nodes[0].getChildren()[0]) ):
-            print 'IF'
             self.src += 'define("'+node.nodes[0].getChildren()[0]+'", '+parsed_expr+')' 
         else:
-            print 'ELSE', node.nodes
             self.src += ', '.join( [get_source( n ) for n in node.nodes ] ) + ' = ' 
             self.src += parsed_expr
 
@@ -337,6 +357,8 @@ class visitor:
         #     name             name being assigned to
         #     flags            XXX
         if re.match( '^[A-Z][_A-Z]*$', node.name ): # it's a constant if ALL CAPS
+            self.src += node.name
+        elif (node.name in self.magic_constants):
             self.src += node.name
         else:
             self.src += '$%s' % node.name

@@ -98,7 +98,7 @@ def process(source_path, dest_path):
         if file.endswith('.py'):
             unindented_source = py2php.get_source(compiler.parseFile(file))
             phpcode = py2php.indent_source(py2php.add_semicolons(unindented_source))       
-        else: # .pyp file
+        elif file.endswith('.pyp'): # .pyp file
             reg = re.compile('(<\?pyp.*?\?>)', re.S) # trouver les <?pyp .. ?>
             matched = reg.split(open(file).read())
             phpcode = ''
@@ -125,7 +125,7 @@ def process(source_path, dest_path):
 
 def code_changed(source_path):
     global _mtimes, _win
-    for filename in GlobDirectoryWalker(source_path, "*.py"):
+    for filename in GlobDirectoryWalker(source_path, "*.py*"):
         if filename.endswith(".pyc") or filename.endswith(".pyo"):
             filename = filename[:-1]
         if not os.path.exists(filename):
