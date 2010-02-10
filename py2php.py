@@ -56,7 +56,7 @@ class visitor:
         #     doc              doc string, a string or <code>None</code>
         #     code             the body of the class statement
         global current_class_name, is_parsing_class
-        is_parsing_class = True
+        is_parsing_class = True # important, must be in the beginning !
         current_class_name = node.name
         if node.doc != None:
             self.src += self.comment_start + node.doc + self.comment_end
@@ -66,7 +66,7 @@ class visitor:
         self.src += ' {\n'
         self.src += get_source( node.code )
         self.src += '}\n'
-        is_parsing_class = False
+        is_parsing_class = False # important, must be at the end!
 
     def visitFunction(self, node):
         # Function attributes
@@ -77,6 +77,8 @@ class visitor:
         #     doc              doc string, a string or <code>None</code>
         #     code             the body of the function
         global current_class_name, is_parsing_class
+        if is_parsing_class: # if class method, delete the Python's self argument
+            node.argnames = node.argnames[1:]
         if node.doc != None:
             self.src += self.comment_start + node.doc + self.comment_end
         if (PHPVERSION == 5 and 
@@ -200,8 +202,16 @@ class visitor:
         # Add attributes
         #     left             left operand
         #     right            right operand
-        self.src += '('+get_source( node.left ) + ' + ' + get_source(
-        node.right )+')'
+        print 'left',node.left
+        print 'right', node.right
+        if ((node.left.__class__ is compiler.ast.Const and 
+        type(node.left.getChildren()[0]) is str) or
+        (node.right.__class__ is compiler.ast.Const and
+        type(node.right.getChildren()[0]) is str)):
+            self.src += get_source(node.left) + ' . ' + get_source(node.right)
+        else: 
+            self.src += '('+get_source( node.left ) + ' + ' + get_source(
+            node.right )+')'
 
     def visitSub(self, node):
         # Sub attributes
