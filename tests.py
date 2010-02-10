@@ -69,60 +69,66 @@ class TestDefBlock(unittest.TestCase):
         self.assertEqual(parsepyp('''\
 def mafonction(): 
     poulet()
-'''),'''\
-function mafonction() {
+'''),'''<?php
+function mafonction () {
     poulet();
 }
-''')
+
+?>''')
     def testDefAssign(self):
         self.assertEqual(parsepyp('''\
 def mafonction(): 
     mavar = poulet()
-'''),'''\
-function mafonction() {
+'''),'''<?php
+function mafonction () {
     $mavar = poulet();
 }
-''')
+
+?>''')
 
     def testDefPassArguments(self):
         self.assertEqual(parsepyp('''\
 def mafonction(argument): 
     mavar = argument
-'''),'''\
-function mafonction($argument) {
+'''),'''<?php
+function mafonction ($argument) {
     $mavar = $argument;
 }
-''')
+
+?>''')
 
     def testDefPassDefaultArguments(self):
         self.assertEqual(parsepyp('''\
 def mafonction(argument = 'valeur par defaut'):
     mavar = argument
-'''),'''\
-function mafonction($argument = 'valeur par defaut') {
+'''),'''<?php
+function mafonction ($argument = "valeur par defaut") {
     $mavar = $argument;
 }
-''')
+
+?>''')
 
     def testDefPass2DefaultArguments(self):
         self.assertEqual(parsepyp('''\
 def mafonction(argument = 'valeur par defaut', argument2 = 'valeur par defaut 2'): 
     mavar = argument
-'''),'''\
-function mafonction($argument = 'valeur par defaut', $argument2 = 'valeur par defaut 2') {
+'''),'''<?php
+function mafonction ($argument = "valeur par defaut", $argument2 = "valeur par defaut 2") {
     $mavar = $argument;
 }
-''')
+
+?>''')
 
     def testDefPass1ArgPlus2DefaultArgs(self):
         self.assertEqual(parsepyp('''\
 def mafonction(nombre, argument = 'valeur par defaut', argument2 = 'valeur par defaut 2'):
     mavar = argument
-'''),'''\
-function mafonction($nombre, $argument = 'valeur par defaut', $argument2 = 'valeur par defaut 2') {
+'''),'''<?php
+function mafonction ($nombre, $argument = "valeur par defaut", $argument2 = "valeur par defaut 2") {
     $mavar = $argument;
 }
-''')
+
+?>''')
 
     def testDefPass2Arguments(self):
         self.assertEqual(parsepyp('''\
@@ -130,62 +136,64 @@ def mafonction(argument, bonsoir):
     mavar = argument
     arg2 = bonsoir
 
-'''),'''\
-function mafonction($argument, $bonsoir) {
+'''),'''<?php
+function mafonction ($argument, $bonsoir) {
     $mavar = $argument;
     $arg2 = $bonsoir;
 }
-''')
+
+?>''')
 
     def testDefAssign2Lines(self):
         self.assertEqual(parsepyp('''\
 def mafonction(): 
     mavar = poulet()
     trois = valeur
-'''),'''\
-function mafonction() {
+'''),'''<?php
+function mafonction () {
     $mavar = poulet();
     $trois = $valeur;
 }
-''')
+
+?>''')
 
     def testIfInDef(self):
         self.assertEqual(parsepyp('''\
 def mafonction():
     if (drole):
         joie = cool
-'''),'''\
-function mafonction() {
+'''),'''<?php
+function mafonction () {
     if ($drole) {
         $joie = $cool;
     }
 }
-''')
+
+?>''')
 
 class TestIfBlock(unittest.TestCase):
     
-    def setUp(self):
-        self.instance = Supurtade2php()
-        
     def testIf(self):
         self.assertEqual(parsepyp('''\
 if (variable) :
     poulet()
-'''),'''\
+'''),'''<?php
 if ($variable) {
     poulet();
 }
-''')
+
+?>''')
 
     def testIfDefaultArg(self):
         self.assertEqual(parsepyp('''\
-if (variable = 2): 
+if (variable == 2): 
     poulet()
-'''),'''\
-if ($variable = 2) {
+'''),'''<?php
+if ($variable === 2) {
     poulet();
 }
-''')
+
+?>''')
 
     def testIfElse(self):
         self.assertEqual(parsepyp('''\
@@ -193,26 +201,28 @@ if (variable) :
     poulet()
 else:
     pouletfrit()
-'''),'''\
+'''),'''<?php
 if ($variable) {
     poulet();
 }
 else {
     pouletfrit();
 }
-''')
+
+?>''')
 
     def testIf2Lines(self):
         self.assertEqual(parsepyp('''\
 if (variable) :
     val = vari()
     valeur = fonc()
-'''),'''\
+'''),'''<?php
 if ($variable) {
     $val = vari();
     $valeur = fonc();
 }
-''')
+
+?>''')
 
     def testElseIf2Lines(self):
         self.assertEqual(parsepyp('''\
@@ -221,7 +231,7 @@ if (variable) :
     valeur = fonc()
 elif (valeur2): 
     drole = rire
-'''),'''\
+'''),'''<?php
 if ($variable) {
     $val = vari();
     $valeur = fonc();
@@ -229,7 +239,8 @@ if ($variable) {
 elseif ($valeur2) {
     $drole = $rire;
 }
-''')
+
+?>''')
 
     def testDoubleElseIf(self):
         self.assertEqual(parsepyp('''\
@@ -240,7 +251,7 @@ elif (valeur2):
     drole = rire
 elif (valeur3):
     drolefou = rirefou
-'''),'''\
+'''),'''<?php
 if ($variable) {
     $val = vari();
     $valeur = fonc();
@@ -251,63 +262,59 @@ elseif ($valeur2) {
 elseif ($valeur3) {
     $drolefou = $rirefou;
 }
-''')
+
+?>''')
 
     def testNestedIfs(self):
         self.assertEqual(parsepyp('''\
-si (variable) {
+if (variable) :
     val = vari()
     valeur = fonc()
-    si (autre) {
+    if (autre):
         joa = trucmalade
+'''),'''<?php
+if ($variable) {
+    $val = vari();
+    $valeur = fonc();
+    if ($autre) {
+        $joa = $trucmalade;
     }
 }
-'''),'''\
-if ($variable) {
-$val = vari();
-$valeur = fonc();
-if ($autre) {
-$joa = $trucmalade;
-}
-}
-''')
+
+?>''')
 
 class TestForBlock(unittest.TestCase):
     
     def testFor(self):
         self.assertEqual(parsepyp('''\
-pour (truc de machins) {
-    valeur = 'truc'
+for truc in machins: 
     print(truc)
-}
-'''),'''\
+'''),'''<?php
 foreach ($machins as $truc) {
-$valeur = 'truc';
-print($truc);
+    print $truc;
 }
-''')
+
+?>''')
 
     def testForKeyValue(self):
         self.assertEqual(parsepyp('''\
-pour (cle,valeur de machins) {
-    truc = valeur
+for cle,valeur in machins:
     print(cle)
-}
-'''),'''\
+'''),'''<?php
 foreach ($machins as $cle => $valeur) {
-$truc = $valeur;
-print($cle);
+    print $cle;
 }
-''')
+
+?>''')
 
 
 class TestOperators(unittest.TestCase):
     
-    def setUp(self):
-        self.instance = Supurtade2php()
         
     def testFor(self):
-        self.assertEqual(parsepyp('var = 3 + 2'),'$var = 3 + 2')
+        self.assertEqual(parsepyp('var = 3 + 2'),'''<?php
+$var = (3 + 2);
+?>''')
 
 if __name__ == '__main__':
     unittest.main()
