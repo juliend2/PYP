@@ -283,7 +283,7 @@ if ($variable) {
 
 ?>''')
 
-class TestForBlock(unittest.TestCase):
+class TestLoopBlock(unittest.TestCase):
     
     def testFor(self):
         self.assertEqual(parsepyp('''\
@@ -307,14 +307,40 @@ foreach ($machins as $cle => $valeur) {
 
 ?>''')
 
+    def testWhile(self):
+        self.assertEqual(parsepyp('''\
+while joie < 3:
+    print(cle)
+'''),'''<?php
+while ($joie < 3) {
+    print $cle;
+}
+
+?>''')
+
 
 class TestOperators(unittest.TestCase):
-    
         
-    def testFor(self):
+    def testAdd(self):
         self.assertEqual(parsepyp('var = 3 + 2'),'''<?php
 $var = (3 + 2);
 ?>''')
+    
+    def testSub(self):
+        self.assertEqual(parsepyp('var = 3 - 2'),'''<?php
+$var = (3 - 2);
+?>''')
+
+    def testMul(self):
+        self.assertEqual(parsepyp('var = 3 * 2'),'''<?php
+$var = (3 * 2);
+?>''')
+
+    def testDiv(self):
+        self.assertEqual(parsepyp('var = 3 / 2'),'''<?php
+$var = (3 / 2);
+?>''')
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -127,7 +127,10 @@ class visitor(visitor_base.VisitorSkeleton):
     def visitDiscard(self, node):
         # Discard attributes
         #     expr             
-        self.src += get_source( node.expr )
+        if node.expr.__class__ is compiler.ast.Const :
+            self.src += '/* ' + get_source( node.expr )[1:-1] + ' */'
+        else:
+            self.src += get_source( node.expr )
 
     def visitReturn(self, node):
         self.src += 'return '+get_source(node.value)
