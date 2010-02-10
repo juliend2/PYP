@@ -260,7 +260,7 @@ class visitor:
         for comp in node.ops:
             if comp[0] == '!=':
                 operator = '!=='
-            elif comp[0] == '==':
+            elif comp[0] == '==' or comp[0] == 'is':
                 operator = '==='
             else:
                 operator = comp[0]
