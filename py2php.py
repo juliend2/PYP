@@ -451,6 +451,9 @@ class visitor(visitor_base.VisitorSkeleton):
             self.src += get_source(node.expr) +'['
             self.src += get_source(node.subs[0]) # [0] parce qu'on ne peut faire de [0:2] en PHP
             self.src += ']'
+
+    def visitPass(self, node):
+        pass
  
 def get_source(node):
     """Return the source code of the node, built by an instance of
@@ -463,7 +466,7 @@ def add_semicolons(code):
     in_comment = False
     new_lines = []
     for line in lines_list:
-        if line.startswith('/*'):
+        if line.startswith('/*') and not line.endswith('*/'):
             in_comment = True
         elif line.endswith('*/'):
             in_comment = False

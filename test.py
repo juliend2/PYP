@@ -12,6 +12,6 @@ py2php.PHPVERSION = 5
 # var = +4
 # '''))
 
-unindented_source = py2php.get_source( compiler.parse("var = 8\n'''phrase du commentaire'''") )
+unindented_source = py2php.get_source( compiler.parse("'''module docstring'''\n'''commentaire'''\nresult = mysql_query(self.sql)") )
 
 print py2php.indent_source(py2php.add_semicolons(unindented_source))
