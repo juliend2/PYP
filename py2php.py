@@ -355,7 +355,7 @@ class visitor(visitor_base.VisitorSkeleton):
             else:
                 self.src += handler[0].getChildren()[0] + ' '
                 self.src += get_source( handler[1] )
-            self.src += ') {'
+            self.src += ') {\n'
             self.src += get_source( handler[2] )
             self.src += '}\n'
 

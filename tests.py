@@ -341,6 +341,62 @@ $var = (3 * 2);
 $var = (3 / 2);
 ?>''')
 
+class TryCatch(unittest.TestCase):
+    def testTry(self):
+        self.assertEqual(parsepyp('''try:
+    returned = call_user_func([classname, func])
+except Exception,e:
+    errors += 1
+'''),'''<?php
+try {
+    $returned = call_user_func(array($classname, $func));
+}
+catch (Exception $e) {
+    $errors += 1;
+}
+
+?>''')
+
+
+class TestMethodChainingPHP5(unittest.TestCase):
+    def setUp(self):
+        py2php.PHPVERSION = 5
+    def testObjectMethod(self):
+        self.assertEqual(parsepyp('''obj.method()'''), '''<?php
+$obj->method();
+?>''')
+    def testObjectPropMethod(self):
+        self.assertEqual(parsepyp('''obj.prop.method()'''), '''<?php
+$obj->prop->method();
+?>''')
+    def testObjectProp2Method(self):
+        self.assertEqual(parsepyp('''obj.prop.method().other()'''), '''<?php
+$obj->prop->method()->other();
+?>''')
+    def testObjectProp3Method(self):
+        self.assertEqual(parsepyp('''obj.prop.method().other().sub()'''), '''<?php
+$obj->prop->method()->other()->sub();
+?>''')
+
+class TestMethodChainingPHP4(unittest.TestCase):
+    def setUp(self):
+        py2php.PHPVERSION = 4
+    def testObjectMethod(self):
+        self.assertEqual(parsepyp('''obj.method()'''), '''<?php
+$obj->method();
+?>''')
+    def testObjectPropMethod(self):
+        self.assertEqual(parsepyp('''obj.prop.method()'''), '''<?php
+$obj->prop->method();
+?>''')
+    def testObjectProp2Method(self):
+        self.assertEqual(parsepyp('''obj.prop.method().other()'''), '''<?php
+$obj->prop->method()->other();
+?>''')
+    def testObjectProp3Method(self):
+        self.assertEqual(parsepyp('''obj.prop.method().other().sub()'''), '''<?php
+$obj->prop->method()->other()->sub();
+?>''')
 
 if __name__ == '__main__':
     unittest.main()
