@@ -1,32 +1,32 @@
 # Prerequisites :
 
-- Python 2.6 on Linux (haven't tested on Mac or Windows)
+- Python 2.6 on Mac or Linux (haven't tested on Windows)
 
 
 # Usage :
 
-1. cd into the directory that contains this script (py2php.py, watch.py, etc)
-example : cd ~/myscripts/pyp/
-2. python watch.py <pyp sources directory> <php destination directory>
+1. cd into the directory that contains this script (py2php.py, watch.py, etc)<br/>
+example : cd ~/myscripts/PYP/
+
+2. python watch.py &lt;pyp sources directory&gt; &lt;php destination directory&gt;<br/>
 example : python watch.py ./ /var/www/projectname/
 
 
 # TODO :
 
-- permettre ce truc : =& (??)
-- parser les quelques methodes cool du python dans leur equivalent en fonction
-php. Genre :
-    * ', '.join(list) deviandrait implode(', ', $list) 
-    * str.split('-', 1) deviendrait explode('-', $str, 1)
-    * list.append('element') deviendrait array_push($list, 'element')
-
+- Fix the issue about the quote excaping.
+- Convert Class attributes
+- Convert Class methods
+- Parse some of the Python methods into their PHP versions. <br/>
+Example :    
+    * ', '.join(list) would become : implode(', ', $list) 
+    * str.split('-', 1) would become : explode('-', $str, 1)
+    * list.append('element') would become : array_push($list, 'element')
 
 # Nice to have:
 
-- $this->{'nom de propriete'}->methode();
-- un setting pour determiner la version de PHP que l'on compile. Si c'est 4 ou 5
-- permettre d'acceder a des attributs de classe comme
-parent::ParentClassMethod() (*** N'EXISTE PAS EN PYTHON***)
+- passing by reference (&$variable , =& , etc)
+- $this-&gt;{'property name'}-&gt;method();
 
 # Known issues :
 - the strings that are generated in PHP have double quotes, because i haven't find a way to detect the kind of quoting of a Python string.
