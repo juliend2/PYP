@@ -211,10 +211,14 @@ class visitor(visitor_base.VisitorSkeleton):
         # Add attributes
         #     left             left operand
         #     right            right operand
-        if ((node.left.__class__ is compiler.ast.Const and 
+        print 'left', node.left
+        print 'right', node.right
+        if (
+        (node.left.__class__ is compiler.ast.Const and 
         type(node.left.getChildren()[0]) is str) or
         (node.right.__class__ is compiler.ast.Const and
-        type(node.right.getChildren()[0]) is str)):
+        type(node.right.getChildren()[0]) is str)
+        ):
             self.src += get_source(node.left) + ' . ' + get_source(node.right)
         else: 
             self.src += '('+get_source( node.left ) + ' + ' + get_source(
