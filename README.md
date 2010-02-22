@@ -5,9 +5,9 @@
 
 # Usage :
 
-1- cd into the directory that contains this script (py2php.py, watch.py, etc)
+1. cd into the directory that contains this script (py2php.py, watch.py, etc)
 example : cd ~/myscripts/pyp/
-2- python watch.py <pyp sources directory> <php destination directory>
+2. python watch.py <pyp sources directory> <php destination directory>
 example : python watch.py ./ /var/www/projectname/
 
 
