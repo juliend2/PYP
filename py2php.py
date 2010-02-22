@@ -387,7 +387,6 @@ class visitor(visitor_base.VisitorSkeleton):
         #     args             a list of arguments
         #     star_args        the extended *-arg value
         #     dstar_args       the extended **-arg value
-        
         # call a function :
         if type(node.node.getChildren()[0]) is str:
             # if it's an instanciation:
