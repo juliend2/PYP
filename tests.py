@@ -323,7 +323,7 @@ class TestOperators(unittest.TestCase):
         
     def testAdd(self):
         self.assertEqual(parsepyp('var = 3 + 2'),'''<?php
-$var = (3 + 2);
+$var = add_or_concat(3, 2);
 ?>''')
     
     def testSub(self):
@@ -382,35 +382,31 @@ $obj->prop->method()->other()->sub();
 class TestStringConcatenation(unittest.TestCase):
     def testSimpleConcat(self):
         self.assertEqual(parsepyp('''var = "string"+"string2"'''), '''<?php
-$var = "string" . "string2";
+$var = add_or_concat("string", "string2");
 ?>''')
     def testStrNumConcat(self):
         self.assertEqual(parsepyp('''var = "string"+3'''), '''<?php
-$var = "string" . 3;
-?>''')
-    def testNumNumNOTConcat(self):
-        self.assertNotEqual(parsepyp('''var = 2+3'''), '''<?php
-$var = 2 . 3;
+$var = add_or_concat("string", 3);
 ?>''')
     def testStrStrStrConcat(self):
         self.assertEqual(parsepyp('''var = "str"+"str"+"str"'''), '''<?php
-$var = "str" . "str" . "str";
+$var = add_or_concat(add_or_concat("str", "str"), "str");
 ?>''')
     def testStrStrStrStrConcat(self):
         self.assertEqual(parsepyp('''var = "str"+"str"+"str"+"str"'''), '''<?php
-$var = "str" . "str" . "str" . "str";
+$var = add_or_concat(add_or_concat(add_or_concat("str", "str"), "str"), "str");
 ?>''')
     def testStrNumStrConcat(self):
         self.assertEqual(parsepyp('''var = "str"+3+"str"'''), '''<?php
-$var = "str" . 3 . "str";
+$var = add_or_concat(add_or_concat("str", 3), "str");
 ?>''')
     def testStrNumStrNumConcat(self):
         self.assertEqual(parsepyp('''var = "str"+3+"str"+4'''), '''<?php
-$var = "str" . 3 . "str" . 4;
+$var = add_or_concat(add_or_concat(add_or_concat("str", 3), "str"), 4);
 ?>''')
     def testNumStrNumStrConcat(self):
         self.assertEqual(parsepyp('''var = 3+"str"+4+"str"'''), '''<?php
-$var = 3 . "str" . 4 . "str";
+$var = add_or_concat(add_or_concat(add_or_concat(3, "str"), 4), "str");
 ?>''')
 
 
