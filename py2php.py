@@ -10,9 +10,11 @@ from types import StringType
 INDENT = '    '
 LINEEND = ';'
 PHPVERSION = 5
+TESTMODE = False
 # used for php4 constructor function name (that is the same as the class name
 current_class_name = ''
 is_parsing_class = False
+add_or_concat_function = "if (!function_exists('add_or_concat')) { function add_or_concat($arg1, $arg2) { if (is_string($arg1) || is_string($arg2)) { return $arg1.$arg2;} else { return $arg1+$arg2;} } }"
 
 class visitor(visitor_base.VisitorSkeleton):
     """Instances of ge_visitor are used as the visitor argument to 
@@ -41,6 +43,7 @@ class visitor(visitor_base.VisitorSkeleton):
         #     doc              doc string, a string or <code>None</code>
         #     node             body of the module, a <tt class="class">Stmt</tt>
         self.src += '<?php\n' 
+        self.src += add_or_concat_function
         if t.doc:
             self.src += self.comment_start + t.doc + self.comment_end
         self.src += get_source(t.getChildNodes()[0])
