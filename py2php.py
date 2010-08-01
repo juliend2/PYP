@@ -14,7 +14,7 @@ TESTMODE = False
 # used for php4 constructor function name (that is the same as the class name
 current_class_name = ''
 is_parsing_class = False
-add_or_concat_function = "if (!function_exists('add_or_concat')) { function add_or_concat($arg1, $arg2) { if (is_string($arg1) || is_string($arg2)) { return $arg1.$arg2;} else { return $arg1+$arg2;} } }"
+add_or_concat_function = "if (!function_exists('add_or_concat')) { function add_or_concat($arg1, $arg2) { if (is_string($arg1) || is_string($arg2)) { return $arg1.$arg2;} else { return $arg1+$arg2;} } } \n\n"
 
 class visitor(visitor_base.VisitorSkeleton):
     """Instances of ge_visitor are used as the visitor argument to 
